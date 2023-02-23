@@ -12,9 +12,11 @@ class NewsSourceListViewModel: ObservableObject {
     
     @Published var newsSources: [NewsSourceViewModel] = []
     
+    lazy var apiKey: String = Constants.getApiKey()
+
     func getSources() async {
         do {
-            let result = try await Webservice().fetchSourcesAsync(url: Constants.Urls.sources)
+            let result = try await Webservice().fetchSourcesAsync(url: self.getSourcesUrl())
 //            DispatchQueue.main.async {
                 self.newsSources = result.map(NewsSourceViewModel.init)
 //            }
@@ -32,6 +34,9 @@ class NewsSourceListViewModel: ObservableObject {
 //            }
 //        }
         
+    }
+    private func getSourcesUrl() -> URL? {
+        return URL(string: "https://newsapi.org/v2/sources?apiKey=\(self.apiKey)")
     }
     
 }
